@@ -40,11 +40,15 @@ int main()
         int figureType = -1;
 
         printf("Digite o tipo de figura basica desejada:\n");
-        if (!scanf("%d", &figureType) && figureType < 1 || figureType > 3)
+        if (!scanf("%d", &figureType))
         {
-            printf("Invalid option.\n");
+            printf("Invalid value.\n");
             cleanStdin();
             continue;
+        }
+        else if (figureType < 1 || figureType > 5)
+        {
+            figureType = 5;
         }
 
 
@@ -54,7 +58,7 @@ int main()
 
         if (!scanf("%d", &numFigures))
         {
-            printf("Invalid option.\n");
+            printf("Invalid value.\n");
             cleanStdin();
             continue;
         }
@@ -167,7 +171,7 @@ bool isValidPlace(int figureType, int line, int col, int lines, int cols, char b
     }
     else if (figureType == 2)
     {
-        return isInsideBoard(line, col, line, cols) &&
+        return isInsideBoard(line, col, lines, cols) &&
                board[line][col] == BLANK &&
                board[line + 1][col] == BLANK &&
                board[line - 1][col] == BLANK &&
@@ -176,10 +180,21 @@ bool isValidPlace(int figureType, int line, int col, int lines, int cols, char b
     }
     else if (figureType == 3)
     {
-        return isInsideBoard(line, col, line, cols) &&
+        return isInsideBoard(line, col, lines, cols) &&
                board[line][col] == BLANK &&
                board[line + 1][col - 1] == BLANK &&
                board[line + 1][col + 1] == BLANK &&
+               board[line - 1][col + 1] == BLANK &&
+               board[line - 1][col - 1] == BLANK;
+    }
+    else if (figureType == 5)
+    {
+        return isInsideBoard(line, col, lines, cols) &&
+               board[line][col] == BLANK &&
+               board[line + 1][col] == BLANK &&
+               board[line - 1][col] == BLANK &&
+               board[line][col + 1] == BLANK &&
+               board[line][col - 1] == BLANK &&
                board[line - 1][col + 1] == BLANK &&
                board[line - 1][col - 1] == BLANK;
     }
@@ -204,8 +219,8 @@ void drawOnBoard(int figureType, int numFigures, int lines, int cols, char board
 
     while (numberOfTries < MAX_NUM_OF_TRIES_ON_DRAWING && totalDrawnFigures < numFigures)
     {
-        int randomLine = rand() % lines + 1;
-        int randomColumn = rand() % cols + 1;
+        int randomLine = rand() % (lines - 1) + 1;
+        int randomColumn = rand() % (cols - 1) + 1;
 
         if (!isValidPlace(figureType, randomLine, randomColumn, lines, cols, board))
         {
@@ -232,6 +247,47 @@ void drawOnBoard(int figureType, int numFigures, int lines, int cols, char board
             board[randomLine + 1][randomColumn + 1] = '*';
             board[randomLine - 1][randomColumn + 1] = '*';
             board[randomLine - 1][randomColumn - 1] = '*';
+        }
+        else if (figureType == 4)
+        {
+            int randomFigure = rand() % 3 + 1;
+
+            if (!isValidPlace(randomFigure, randomLine, randomColumn, lines, cols, board))
+            {
+                numberOfTries++;
+                continue;
+            }
+
+            if (randomFigure == 1)
+            {
+                board[randomLine][randomColumn] = '*';
+            }
+            else if (randomFigure == 2)
+            {
+                board[randomLine][randomColumn] = '*';
+                board[randomLine + 1][randomColumn] = '*';
+                board[randomLine - 1][randomColumn] = '*';
+                board[randomLine][randomColumn + 1] = '*';
+                board[randomLine][randomColumn - 1] = '*';
+            }
+            else if (randomFigure == 3)
+            {
+                board[randomLine][randomColumn] = '*';
+                board[randomLine + 1][randomColumn - 1] = '*';
+                board[randomLine + 1][randomColumn + 1] = '*';
+                board[randomLine - 1][randomColumn + 1] = '*';
+                board[randomLine - 1][randomColumn - 1] = '*';
+            }
+        }
+        else
+        {
+            board[randomLine][randomColumn] = ' ';
+            board[randomLine + 1][randomColumn] = '|';
+            board[randomLine - 1][randomColumn] = 'o';
+            board[randomLine][randomColumn + 1] = '\\';
+            board[randomLine][randomColumn - 1] = '(';
+            board[randomLine - 1][randomColumn + 1] = ')';
+            board[randomLine - 1][randomColumn - 1] = '>';
         }
 
         totalDrawnFigures++;
