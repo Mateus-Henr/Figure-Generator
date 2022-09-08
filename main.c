@@ -28,14 +28,13 @@ int main()
 {
     char board[20][80];
 
-    initialiseBoard(20, 80, board);
-
     srand(time(NULL));
 
     while (true)
     {
         printMenu();
 
+        initialiseBoard(20, 80, board);
 
         int figureType = -1;
 
@@ -71,10 +70,36 @@ int main()
             numFigures = 100;
         }
 
+        while (true)
+        {
+            drawOnBoard(figureType, numFigures, 20, 80, board);
 
-        drawOnBoard(figureType, numFigures, 20, 80, board);
+            printBoard(figureType, numFigures, 20, 80, board);
 
-        printBoard(figureType, numFigures, 20, 80, board);
+            int userChoice = -1;
+
+            printf("\nAperte qualquer tecla para utilizar os mesmos valores, se não digite 0.\n");
+
+            if (!scanf("%d", &userChoice) || userChoice != 0)
+            {
+                cleanStdin();
+                initialiseBoard(20, 80, board);
+                continue;
+            }
+
+            break;
+        }
+
+        int userChoice = -1;
+
+        printf("\nAperte qualquer tecla para utilizar um novo quadro, se não digite 0.\n");
+
+        if (!scanf("%d", &userChoice) || userChoice != 0)
+        {
+            cleanStdin();
+            initialiseBoard(20, 80, board);
+            continue;
+        }
 
         break;
     }
@@ -88,7 +113,7 @@ int main()
  */
 void printMenu()
 {
-    printf("PROGRAMA GERADOR DE OBRA DE ARTE:\n"
+    printf("\nPROGRAMA GERADOR DE OBRA DE ARTE:\n"
            "=================================\n"
            "Escolha o tipo de figura basica a ser usada para criar a obra:\n"
            "1 - asterisco simples.\n"
