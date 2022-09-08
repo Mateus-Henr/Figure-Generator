@@ -8,13 +8,18 @@
 
 
 //  Function prototypes
-void printBoard(int figureType, int numFigures, int lines, int cols, char board[lines][cols]);
+
+void printMenu();
 
 void initialiseBoard(int lines, int cols, char board[lines][cols]);
 
-void printOptions();
+bool isInsideBoard(int line, int col, int lines, int cols);
+
+bool isValidPlace(int figureType, int line, int col, int lines, int cols, char board[lines][cols]);
 
 void drawOnBoard(int figureType, int numFigures, int lines, int cols, char board[lines][cols]);
+
+void printBoard(int figureType, int numFigures, int lines, int cols, char board[lines][cols]);
 
 void cleanStdin(void);
 
@@ -29,7 +34,7 @@ int main()
 
     while (true)
     {
-        printOptions();
+        printMenu();
 
 
         int figureType = -1;
@@ -64,6 +69,7 @@ int main()
 
 
         drawOnBoard(figureType, numFigures, 20, 80, board);
+
         printBoard(figureType, numFigures, 20, 80, board);
 
         break;
@@ -74,11 +80,27 @@ int main()
 
 
 /*
+ *  Prints the menu out.
+ */
+void printMenu()
+{
+    printf("PROGRAMA GERADOR DE OBRA DE ARTE:\n"
+           "=================================\n"
+           "Escolha o tipo de figura basica a ser usada para criar a obra:\n"
+           "1 - asterisco simples.\n"
+           "2 - simbolo de soma com asteriscos.\n"
+           "3 - letra X com asteriscos.\n"
+           "4 - figuras aleatorias\n"
+           "5 ou qualquer outro numero – opcao de obra de arte criada pelo aluno\n");
+}
+
+
+/*
  *  Initialises the board with determined characters.
  *
- *  @param     board     pointer for the matrix.
- *  @param     lines     number of lines.
- *  @param     cols      number of columns.
+ *  @param      board      pointer for a matrix.
+ *  @param      lines      number of lines.
+ *  @param      cols       number of columns.
  */
 void initialiseBoard(int lines, int cols, char board[lines][cols])
 {
@@ -103,6 +125,78 @@ void initialiseBoard(int lines, int cols, char board[lines][cols])
 }
 
 
+/*
+ *  Checks if a figure would be inside a board's boundaries.
+ *
+ *  @param      line       line to check.
+ *  @param      col        column to check.
+ *  @param      lines      number of lines.
+ *  @param      cols       number of columns.
+ *  @return                whether the figure is inside the board.
+ */
+bool isInsideBoard(int line, int col, int lines, int cols)
+{
+    return line + 1 > 0 &&
+           line + 1 < lines - 1 &&
+           line - 1 > 0 &&
+           line - 1 < lines - 1 &&
+           col - 1 > 0 &&
+           col - 1 < cols - 1 &&
+           col + 1 > 0 &&
+           col + 1 < cols - 1;
+}
+
+
+/*
+ *  Checks if a figure would be inserted in a valid place.
+ *
+ *  @param      figureType      type of figure.
+ *  @param      board           pointer for a matrix.
+ *  @param      line            line to check.
+ *  @param      col             column to check.
+ *  @param      lines           number of lines.
+ *  @param      cols            number of columns.
+ *  @return                     whther the position is valid.
+ */
+bool isValidPlace(int figureType, int line, int col, int lines, int cols, char board[lines][cols])
+{
+
+    if (figureType == 1)
+    {
+        return board[line][col] == BLANK;
+    }
+    else if (figureType == 2)
+    {
+        return isInsideBoard(line, col, line, cols) &&
+               board[line][col] == BLANK &&
+               board[line + 1][col] == BLANK &&
+               board[line - 1][col] == BLANK &&
+               board[line][col + 1] == BLANK &&
+               board[line][col - 1] == BLANK;
+    }
+    else if (figureType == 3)
+    {
+        return isInsideBoard(line, col, line, cols) &&
+               board[line][col] == BLANK &&
+               board[line + 1][col - 1] == BLANK &&
+               board[line + 1][col + 1] == BLANK &&
+               board[line - 1][col + 1] == BLANK &&
+               board[line - 1][col - 1] == BLANK;
+    }
+
+    return true;
+}
+
+
+/*
+ *  Draws a figure on a board.
+ *
+ *  @param      figureType      type of figure.
+ *  @param      numFigures      number of figures.
+ *  @param      lines           number of lines.
+ *  @param      cols            number of columns.
+ *  @param      board           pointer for a matrix.
+ */
 void drawOnBoard(int figureType, int numFigures, int lines, int cols, char board[lines][cols])
 {
     int numberOfTries = 0;
@@ -110,16 +204,36 @@ void drawOnBoard(int figureType, int numFigures, int lines, int cols, char board
 
     while (numberOfTries < MAX_NUM_OF_TRIES_ON_DRAWING && totalDrawnFigures < numFigures)
     {
-        int randomLine = rand() % lines;
-        int randomColumn = rand() % cols;
+        int randomLine = rand() % lines + 1;
+        int randomColumn = rand() % cols + 1;
 
-        if (board[randomLine][randomColumn] != BLANK)
+        if (!isValidPlace(figureType, randomLine, randomColumn, lines, cols, board))
         {
             numberOfTries++;
             continue;
         }
 
-        board[randomLine][randomColumn] = '*';
+        if (figureType == 1)
+        {
+            board[randomLine][randomColumn] = '*';
+        }
+        else if (figureType == 2)
+        {
+            board[randomLine][randomColumn] = '*';
+            board[randomLine + 1][randomColumn] = '*';
+            board[randomLine - 1][randomColumn] = '*';
+            board[randomLine][randomColumn + 1] = '*';
+            board[randomLine][randomColumn - 1] = '*';
+        }
+        else if (figureType == 3)
+        {
+            board[randomLine][randomColumn] = '*';
+            board[randomLine + 1][randomColumn - 1] = '*';
+            board[randomLine + 1][randomColumn + 1] = '*';
+            board[randomLine - 1][randomColumn + 1] = '*';
+            board[randomLine - 1][randomColumn - 1] = '*';
+        }
+
         totalDrawnFigures++;
     }
 }
@@ -128,9 +242,9 @@ void drawOnBoard(int figureType, int numFigures, int lines, int cols, char board
 /*
  *  Prints board out.
  *
- *  @param     board     pointer for the matrix.
- *  @param     lines     number of lines.
- *  @param     cols      number of columns.
+ *  @param      lines      number of lines.
+ *  @param      cols       number of columns.
+ *  @param      board      pointer for a matrix.
  */
 void printBoard(int figureType, int numFigures, int lines, int cols, char board[lines][cols])
 {
@@ -145,22 +259,6 @@ void printBoard(int figureType, int numFigures, int lines, int cols, char board[
 
         printf("\n");
     }
-}
-
-
-/*
- *  Prints the menu out.
- */
-void printOptions()
-{
-    printf("PROGRAMA GERADOR DE OBRA DE ARTE:\n"
-           "=================================\n"
-           "Escolha o tipo de figura basica a ser usada para criar a obra:\n"
-           "1 - asterisco simples.\n"
-           "2 - simbolo de soma com asteriscos.\n"
-           "3 - letra X com asteriscos.\n"
-           "4 - figuras aleatorias\n"
-           "5 ou qualquer outro numero – opcao de obra de arte criada pelo aluno\n");
 }
 
 
