@@ -3,4 +3,4 @@ project(TP0_PAA C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(TP0_PAA main.c)
+add_executable(TP0_PAA src/main.c)
