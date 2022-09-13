@@ -1,8 +1,5 @@
-all: main.o
-	gcc -o all main.o
+all:
+	gcc src/main.c -o main
 
-main.o: main.c
-	gcc -c main.c
-	
 clean:
-	rm all main.o
+	rm all main
