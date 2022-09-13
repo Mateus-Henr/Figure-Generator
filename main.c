@@ -65,7 +65,7 @@ int main()
             cleanStdin();
             continue;
         }
-        else if (figureType <= 0)
+        else if (numFigures <= 0)
         {
             numFigures = (rand() % 100) + 1;
         }
@@ -82,7 +82,7 @@ int main()
 
             int userChoice = -1;
 
-            printf("\nAperte qualquer tecla para utilizar os mesmos valores, se não digite 0.\n");
+            printf("\nAperte qualquer tecla para utilizar os mesmos valores no mesmo quadro, se não digite 0.\n");
 
             if (!scanf("%d", &userChoice) || userChoice != 0)
             {
@@ -96,7 +96,7 @@ int main()
 
         int userChoice = -1;
 
-        printf("\nAperte qualquer tecla para utilizar um novo quadro, se não digite 0.\n");
+        printf("\nAperte qualquer tecla para utilizar um novo quadro, se não digite 0 para o mesmo quadro com valores diferentes.\n");
 
         if (!scanf("%d", &userChoice) || userChoice != 0)
         {
