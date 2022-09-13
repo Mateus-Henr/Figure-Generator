@@ -26,7 +26,10 @@ void cleanStdin(void);
 
 int main()
 {
-    char board[20][80];
+    int lines = 20;
+    int columns = 80;
+
+    char board[lines][columns];
 
     srand(time(NULL));
 
@@ -34,11 +37,12 @@ int main()
     {
         printMenu();
 
-        initialiseBoard(20, 80, board);
+        initialiseBoard(lines, columns, board);
 
         int figureType = -1;
 
         printf("Digite o tipo de figura basica desejada:\n");
+
         if (!scanf("%d", &figureType))
         {
             printf("Invalid value.\n");
@@ -72,9 +76,9 @@ int main()
 
         while (true)
         {
-            drawOnBoard(figureType, numFigures, 20, 80, board);
+            drawOnBoard(figureType, numFigures, lines, columns, board);
 
-            printBoard(figureType, numFigures, 20, 80, board);
+            printBoard(figureType, numFigures, lines, columns, board);
 
             int userChoice = -1;
 
@@ -83,7 +87,7 @@ int main()
             if (!scanf("%d", &userChoice) || userChoice != 0)
             {
                 cleanStdin();
-                initialiseBoard(20, 80, board);
+                initialiseBoard(lines, columns, board);
                 continue;
             }
 
@@ -97,7 +101,7 @@ int main()
         if (!scanf("%d", &userChoice) || userChoice != 0)
         {
             cleanStdin();
-            initialiseBoard(20, 80, board);
+            initialiseBoard(lines, columns, board);
             continue;
         }
 
